@@ -2,10 +2,12 @@ const express = require("express");
 const cors = require("cors");
 const pool = require("./db");
 const authRoutes = require("./routes/authRoutes");
+const bookRoutes = require("./routes/bookRoutes");
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use("/auth",authRoutes);
+app.use("/books",bookRoutes);
 app.get("/",(req,res)=>{
     res.send("Backend server is running");
 });
