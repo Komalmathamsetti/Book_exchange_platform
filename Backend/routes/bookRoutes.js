@@ -1,8 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const {addBook,getBook,deleteBook,getBookById,updateBook} = require("../controllers/bookcontroller");
+const {addBook,getBook,deleteBook,getBookById,updateBook,searchBook,filterBook,pagination,sortBooks} = require("../controllers/bookcontroller");
 router.post("/",addBook);
 router.get("/",getBook);
+router.get("/search",searchBook);
+router.get("/filter",filterBook);
+router.get("/paginate",pagination);
+router.get("/sort",sortBooks);
 router.get("/:id",getBookById);
 router.put("/:id",updateBook);
 router.delete("/:id",deleteBook);

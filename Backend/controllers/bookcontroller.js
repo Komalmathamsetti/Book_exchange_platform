@@ -68,3 +68,62 @@ exports.updateBook = async(req,res)=>{
         res.status(500).send("Server error");
     }
 };
+exports.searchBook = async(req,res)=>{
+    try{
+        const {title} = req.query;
+        const result = await pool.query("SELECT * FROM books WHERE title ILIKE $1",[`%${title}%`]);
+        if(result.rows.length === 0){
+            return res.status(404).json({message: "Book not found"});
+        }
+        res.json(result.rows);
+    }catch(error){
+        console.error(error);
+        res.status(500).send("Server error");
+    }
+};
+exports.filterBook = async (req, res) => {
+  try {
+
+    const { subject, condition } = req.query;
+
+    const result = await pool.query(
+      "SELECT * FROM books WHERE subject = $1 OR condition = $2",
+      [subject, condition]
+    );
+    if(result.rows.length === 0){
+        return res.status(404).json({message: "Book not found"});
+    }
+    res.json(result.rows);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error");
+  }
+};
+
+exports.pagination = async(req,res)=>{
+    try{
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit)|| 5;
+        const offset = (page-1)*limit;
+        const result = await pool.query("SELECT * FROM books LIMIT $1 OFFSET $2",[limit,offset]);
+        if(result.rows.length === 0){
+            return res.status(404).json({message: "Book not found"});
+        }
+        res.json(result.rows);
+    }catch(error){
+        console.error(error);
+        res.status(500).send("Server error");
+    }
+};
+exports.sortBooks = async(req,res)=>{
+    try{
+        const {order} = req.query;
+        const sortOrder = order === "desc"?"DESC":"ASC";
+        const result = await pool.query(`SELECT * FROM books ORDER BY title ${sortOrder}`);
+        res.json(result.rows);
+    }catch(error){
+        console.error(error);
+        res.status(500).send("Server error");
+    }
+};
