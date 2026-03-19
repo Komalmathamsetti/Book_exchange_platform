@@ -1,4 +1,29 @@
-node_modules
+# dependencies
+node_modules/
+
+# env files
 .env
-dist 
-build
+
+# build folders
+dist/
+build/
+
+# uploads (if storing images locally)
+uploads/
+
+# logs
+logs/
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# editor files
+.vscode/
+.idea/
+
+# temporary files
+*.tmp
+*.temp
