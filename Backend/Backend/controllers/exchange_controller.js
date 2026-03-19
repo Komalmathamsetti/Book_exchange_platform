@@ -15,14 +15,6 @@ exports.createExchangeRequest = async(req,res)=>{
         }
         const result = await pool.query(`INSERT INTO exchange_requests (book_id,requester_id) VALUES ($1,$2) RETURNING *`,[book_id,requester_id]);
         await pool.query(`INSERT INTO notifications (user_id,message) VALUES ($1,$2)`,[book.rows[0].owner_id,"Someone requested your book"]);
-        const io = req.app.get("io");
-        const users = req.app.get("users");
-        const recieveSocket = users[book.rows[0].owner_id];
-        if(recieveSocket){
-            io.to(recieveSocket).emit("new_notification",{
-                message: "Someone requested your book"
-            });
-        }
         return res.json({
             message: "Exchange request created successfully",
             request: result.rows[0],

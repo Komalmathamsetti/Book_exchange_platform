@@ -1,3 +1,8 @@
 node_modules
 .env
+<<<<<<< HEAD
 uploads/
+=======
+dist 
+build
+>>>>>>> c7e162196d244cc12acd003b45821b8272ef47d2
