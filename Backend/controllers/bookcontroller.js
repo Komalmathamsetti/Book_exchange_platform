@@ -97,3 +97,77 @@ exports.getBooks = async(req,res)=>{
         res.status(500).send("Server error");
     }
 };
+exports.getRecommendedBooks = async (req, res) => {
+  try {
+
+    const user_id = req.params.user_id;
+
+    // 1️⃣ get user interest
+    const userInterest = await pool.query(
+      `SELECT subject
+       FROM books 
+       WHERE owner_id = $1
+       GROUP BY subject
+       ORDER BY COUNT(*) DESC
+       LIMIT 1`,
+      [user_id]
+    );
+
+    // 2️⃣ if no interest → fallback
+    if (userInterest.rows.length === 0) {
+      const fallback = await pool.query(
+        `SELECT * FROM books
+         WHERE status = 'AVAILABLE'
+         ORDER BY created_at DESC
+         LIMIT 5`
+      );
+
+      return res.json({
+        type: "fallback",
+        books: fallback.rows
+      });
+    }
+
+    const subject = userInterest.rows[0].subject;
+
+    // 3️⃣ try personalized
+    const result = await pool.query(
+      `SELECT * FROM books
+       WHERE subject = $1
+       AND owner_id != $2
+       AND status = 'AVAILABLE'
+       ORDER BY created_at DESC
+       LIMIT 5`,
+      [subject, user_id]
+    );
+
+    // 4️⃣ if no matching books → fallback
+    if (result.rows.length === 0) {
+      const fallback = await pool.query(
+        `SELECT * FROM books
+         WHERE owner_id != $1
+         AND status = 'AVAILABLE'
+         ORDER BY created_at DESC
+         LIMIT 5`,
+        [user_id]
+      );
+
+      return res.json({
+        type: "fallback_no_match",
+        message: "No similar books found",
+        books: fallback.rows
+      });
+    }
+
+    // 5️⃣ return personalized
+    return res.json({
+      type: "personalized",
+      subject,
+      books: result.rows
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send("Server error");
+  }
+};

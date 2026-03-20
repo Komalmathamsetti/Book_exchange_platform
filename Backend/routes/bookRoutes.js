@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const {addBook,getBooks,deleteBook,getBookById,updateBook} = require("../controllers/bookcontroller");
+const {addBook,getBooks,deleteBook,getBookById,updateBook,getRecommendedBooks} = require("../controllers/bookcontroller");
 router.get("/", getBooks);
 router.get("/:id",getBookById);
 router.post("/",addBook);
 router.put("/:id",updateBook);
 router.delete("/:id",deleteBook);
+router.get("/recommend/:user_id",getRecommendedBooks);
 module.exports = router;
