@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+/*import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import API from "../services/api";
 
 function Home() {
@@ -9,14 +10,19 @@ function Home() {
     API.get("/books")
       .then(res => {
         console.log(res.data);
-        setBooks(res.data);
+        setBooks(Array.isArray(res.data) ? res.data : res.data.books || []);
       })
       .catch(err => console.error(err));
   }, []);
 
   return (
     <div>
-      <h1>Books</h1>
+      <h1>Home Page</h1>
+
+      <Link to="/login">Login</Link> |{" "}
+      <Link to="/register">Register</Link>
+
+      <h2>Books</h2>
 
       {books.length === 0 ? (
         <p>No books available</p>
@@ -24,10 +30,67 @@ function Home() {
         books.map(book => (
           <div key={book.id}>
             <h3>{book.title}</h3>
-            <p>{book.author}</p>
           </div>
         ))
       )}
+    </div>
+  );
+}
+
+export default Home;*/
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import API from "../services/api";
+
+function Home() {
+
+  const [books, setBooks] = useState([]);
+  const [loading,setLoading] = useState(true);
+  const [error,setError] = useState("");
+
+  useEffect(() => {
+    fetchBooks();
+  }, []);
+const fetchBooks = async()=>{
+  try{
+    const res = await API.get("/books");
+    setBooks(res.data);
+  }catch(error){
+    console.error(error);
+    setError("Failed to load books");
+  }finally{
+    setLoading(false);
+  }
+};
+  return (
+    <div style={{padding: "20px"}}>
+      <div style={{marginBottom: "20px"}}>
+        <Link to="/login">Login</Link>
+        <Link to="/register">Register</Link>
+      </div>
+      <h1>Book Exchange</h1>
+      {loading && <p>Loading Books...</p>}
+      {error && <p style={{color: "red"}}>{error}</p>}
+      {!loading && books.length === 0 && (
+        <p>No books available</p>
+      )}
+      <div>
+        {books.map((book)=>(
+          <div
+            key={book.id}
+            style={{
+              border:"1px solid #ccc",
+              padding: "10px",
+              marginBottom: "10px",
+              borderRadius: "5px"
+          }}>
+          <h3>{book.title}</h3>
+          <p><strong>Author:</strong>{book.author}</p>
+          <p><strong>Subject:</strong>{book.subject}</p>
+          <p><strong>Condition:</strong>{book.condition}</p>
+        </div>
+        ))}
+      </div>
     </div>
   );
 }
