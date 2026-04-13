@@ -62,11 +62,24 @@ const fetchBooks = async()=>{
     setLoading(false);
   }
 };
+const handleRequest = async(book_id)=>{
+  try{
+     await API.post("/exchange",{
+      book_id,
+      requester_id:1
+  });
+  alert("Request sent");
+  }catch(error){
+    console.error(error);
+    alert("Request failed");
+  }
+};
   return (
     <div style={{padding: "20px"}}>
       <div style={{marginBottom: "20px"}}>
         <Link to="/login">Login</Link>
         <Link to="/register">Register</Link>
+        <Link to="/add-book">Add Book</Link>
       </div>
       <h1>Book Exchange</h1>
       {loading && <p>Loading Books...</p>}
@@ -88,6 +101,7 @@ const fetchBooks = async()=>{
           <p><strong>Author:</strong>{book.author}</p>
           <p><strong>Subject:</strong>{book.subject}</p>
           <p><strong>Condition:</strong>{book.condition}</p>
+          <button onClick={()=>handleRequest(book.id)}>Request</button>
         </div>
         ))}
       </div>
