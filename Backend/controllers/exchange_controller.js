@@ -73,3 +73,59 @@ exports.deleteExchangeRequest = async(req,res)=>{
         res.status(500).send("Server error");
     }
 };
+exports.acceptRequest = async (req, res) => {
+  try {
+    const request_id = req.params.id;
+
+    const request = await pool.query(
+      "SELECT * FROM exchange_requests WHERE id = $1",
+      [request_id]
+    );
+
+    if (request.rows.length === 0) {
+      return res.status(404).json({ message: "Request not found" });
+    }
+
+    const book_id = request.rows[0].book_id;
+
+    // accept selected request
+    await pool.query(
+      "UPDATE exchange_requests SET status = 'ACCEPTED' WHERE id = $1",
+      [request_id]
+    );
+
+    // reject others
+    await pool.query(
+      "UPDATE exchange_requests SET status = 'REJECTED' WHERE book_id = $1 AND id != $2",
+      [book_id, request_id]
+    );
+
+    // update book
+    await pool.query(
+      "UPDATE books SET status = 'EXCHANGED' WHERE id = $1",
+      [book_id]
+    );
+
+    res.json({ message: "Request accepted successfully" });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error");
+  }
+};
+exports.rejectRequest = async (req, res) => {
+  try {
+    const request_id = req.params.id;
+
+    await pool.query(
+      "UPDATE exchange_requests SET status = 'REJECTED' WHERE id = $1",
+      [request_id]
+    );
+
+    res.json({ message: "Request rejected" });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error");
+  }
+};

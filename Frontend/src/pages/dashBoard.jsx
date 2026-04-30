@@ -19,32 +19,30 @@ function Dashboard() {
   }, []);
 
   const handleAccept = async (id) => {
-    try {
-      await API.put(`/exchange/accept/${id}`);
-      alert("Accepted");
+  try {
+    await API.put(`/exchange/accept/${id}`);
+    alert("Accepted");
 
-      // 🔥 re-fetch after action
-      const res = await API.get("/dashboard/book-requests/1");
-      setRequests(res.data);
+    // 🔥 refresh UI
+    const res = await API.get("/dashboard/book-requests/1");
+    setRequests(res.data);
 
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
+  } catch (error) {
+    console.error(error);
+  }
+};
   const handleReject = async (id) => {
-    try {
-      await API.put(`/exchange/reject/${id}`);
-      alert("Rejected");
+  try {
+    await API.put(`/exchange/reject/${id}`);
+    alert("Rejected");
 
-      // 🔥 re-fetch after action
-      const res = await API.get("/dashboard/book-requests/1");
-      setRequests(res.data);
+    const res = await API.get("/dashboard/book-requests/1");
+    setRequests(res.data);
 
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   return (
     <div>

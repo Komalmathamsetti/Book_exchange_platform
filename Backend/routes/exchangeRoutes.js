@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {createExchangeRequest,getAllRequests,updateExchangeRequest, deleteExchangeRequest} = require("../controllers/exchange_controller");
+const {createExchangeRequest,getAllRequests,acceptRequest,rejectRequest,updateExchangeRequest, deleteExchangeRequest} = require("../controllers/exchange_controller");
 router.post("/",createExchangeRequest);
 router.get("/",getAllRequests);
 router.put("/accept/:id", acceptRequest);
