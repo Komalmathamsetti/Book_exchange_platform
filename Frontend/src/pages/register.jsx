@@ -14,10 +14,12 @@ function Register(){
             await API.post("/auth/register",form);
             alert("Registered successfully");
             navigate("/login");
-        }catch(error){
-            console.error(error);
-            alert("Registration failed");
-        }
+        }catch (error) {
+  console.error("FULL ERROR:", error);
+  console.error("SERVER ERROR:", error.response?.data);
+
+  alert(error.response?.data?.message || "Registration failed");
+}
     };
     return(
         <form onSubmit = {handleRegister}>

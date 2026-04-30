@@ -59,43 +59,59 @@ exports.updateBook = async(req,res)=>{
         res.status(500).send("Server error");
     }
 };
-exports.getBooks = async(req,res)=>{
-    try{
-        let { search, subject, condition, sort, page, limit } = req.query;
-        page = parseInt(page) || 1;
-        limit = parseInt(limit) || 10;
-        const offset = (page - 1)*limit;
-        let query = `SELECT * FROM books WHERE status = 'AVAILABLE'`;
-        let values = [];
-        let index = 1;
-        if(search){
-            query += ` AND (title ILIKE $${index} OR author ILIKE $${index})`;
-            values.push(`%${search}%`);
-            index++;
-        }
-        if(subject){
-            query += ` AND subject = $${index}`;
-            values.push(subject);
-            index++;
-        }
-        if(condition){
-            query += ` AND condition = $${index}`;
-            values.push(condition);
-            index++;
-        }
-        if(sort == "latest"){
-            query += ` ORDER BY created_at DESC`;
-        }else{
-            query += ` ORDER BY created_at ASC`;
-        }
-        query += ` LIMIT $${index} OFFSET $${index+1}`;
-        values.push(limit,offset);
-        const result = await pool.query(query,values);
-        return res.json(result.rows);
-    }catch(error){
-        console.error(error);
-        res.status(500).send("Server error");
+exports.getBooks = async (req, res) => {
+  try {
+    let { search, subject, condition, sort, page, limit } = req.query;
+
+    // ✅ Defaults
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 100; // 🔥 increased limit
+    const offset = (page - 1) * limit;
+
+    let query = `SELECT * FROM books WHERE status = 'AVAILABLE'`;
+    let values = [];
+    let index = 1;
+
+    // 🔍 Search
+    if (search) {
+      query += ` AND (title ILIKE $${index} OR author ILIKE $${index})`;
+      values.push(`%${search}%`);
+      index++;
     }
+
+    // 📚 Subject filter
+    if (subject) {
+      query += ` AND subject = $${index}`;
+      values.push(subject);
+      index++;
+    }
+
+    // 📌 Condition filter
+    if (condition) {
+      query += ` AND condition = $${index}`;
+      values.push(condition);
+      index++;
+    }
+
+    // 🔃 Sorting
+    if (sort === "latest") {
+      query += ` ORDER BY created_at DESC`;
+    } else {
+      query += ` ORDER BY created_at ASC`;
+    }
+
+    // 🔥 Pagination (still kept but large limit)
+    query += ` LIMIT $${index} OFFSET $${index + 1}`;
+    values.push(limit, offset);
+
+    const result = await pool.query(query, values);
+
+    return res.json(result.rows);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error");
+  }
 };
 exports.getRecommendedBooks = async (req, res) => {
   try {
