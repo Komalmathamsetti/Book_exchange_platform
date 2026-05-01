@@ -1,43 +1,4 @@
-/*import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import API from "../services/api";
 
-function Home() {
-
-  const [books, setBooks] = useState([]);
-
-  useEffect(() => {
-    API.get("/books")
-      .then(res => {
-        console.log(res.data);
-        setBooks(Array.isArray(res.data) ? res.data : res.data.books || []);
-      })
-      .catch(err => console.error(err));
-  }, []);
-
-  return (
-    <div>
-      <h1>Home Page</h1>
-
-      <Link to="/login">Login</Link> |{" "}
-      <Link to="/register">Register</Link>
-
-      <h2>Books</h2>
-
-      {books.length === 0 ? (
-        <p>No books available</p>
-      ) : (
-        books.map(book => (
-          <div key={book.id}>
-            <h3>{book.title}</h3>
-          </div>
-        ))
-      )}
-    </div>
-  );
-}
-
-export default Home;*/
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import API from "../services/api";
@@ -64,7 +25,7 @@ function Home() {
     }
   };
 
-  // 🔥 Improved request handler
+  // 🔥 Request handler
   const handleRequest = async (book_id) => {
     try {
       const res = await API.post("/exchange", {
@@ -86,71 +47,61 @@ function Home() {
   return (
     <div style={{ padding: "20px" }}>
 
-      {/* 🔗 Navigation */}
-      <div style={{ marginBottom: "20px" }}>
-        <Link to="/login">Login</Link> |{" "}
-        <Link to="/register">Register</Link> |{" "}
-        <Link to="/add-book">Add Book</Link>
-        <Link to="/dashBoard">Dashboard</Link>
+      {/* 🔝 Navbar */}
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        marginBottom: "20px"
+      }}>
+        <h2>📚 Book Exchange</h2>
+
+        <div>
+          <Link to="/">Home</Link>{" "}
+          <Link to="/dashboard">Dashboard</Link>{" "}
+          <Link to="/add-book">Add Book</Link>{" "}
+          <Link to="/login">Login</Link>
+        </div>
       </div>
 
-      <h1>📚 Book Exchange</h1>
-
-      {/* ⏳ Loading */}
-      {loading && <p>Loading Books...</p>}
-
-      {/* ❌ Error */}
+      {/* 🔥 Loading & Error */}
+      {loading && <p>Loading books...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      {/* 📭 Empty */}
-      {!loading && books.length === 0 && (
+      {/* 📚 Books Grid */}
+      {!loading && books.length === 0 ? (
         <p>No books available</p>
-      )}
-
-      {/* 📚 Book List */}
-      <div>
-        {books.map((book) => (
-          <div
-            key={book.id}
-            style={{
-              border: "1px solid #ccc",
+      ) : (
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+          gap: "20px"
+        }}>
+          {books.map((book) => (
+            <div key={book.id} style={{
+              backgroundColor: "#1e293b",
               padding: "15px",
-              marginBottom: "15px",
-              borderRadius: "8px",
-              boxShadow: "0 2px 5px rgba(0,0,0,0.1)"
-            }}
-          >
-            <h3>{book.title}</h3>
-            <p><strong>Author:</strong> {book.author}</p>
-            <p><strong>Subject:</strong> {book.subject}</p>
-            <p><strong>Condition:</strong> {book.condition}</p>
+              borderRadius: "10px",
+              boxShadow: "0 0 10px rgba(0,0,0,0.3)"
+            }}>
+              <h3>{book.title}</h3>
+              <p><b>Author:</b> {book.author}</p>
+              <p><b>Subject:</b> {book.subject}</p>
+              <p><b>Condition:</b> {book.condition}</p>
 
-            {/* 🔥 Improved Button */}
-            <button
-              onClick={() => handleRequest(book.id)}
-              disabled={book.status === "EXCHANGED"}
-              style={{
-                marginTop: "10px",
-                padding: "8px 12px",
-                backgroundColor:
-                  book.status === "EXCHANGED" ? "gray" : "#007bff",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                cursor:
-                  book.status === "EXCHANGED"
-                    ? "not-allowed"
-                    : "pointer"
-              }}
-            >
-              {book.status === "EXCHANGED"
-                ? "Unavailable"
-                : "Request"}
-            </button>
-
-          </div>
-        ))}
-      </div>
+              <button
+                onClick={() => handleRequest(book.id)}
+                style={{
+                  backgroundColor: "#3b82f6",
+                  color: "white",
+                  marginTop: "10px"
+                }}
+              >
+                Request
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
 
     </div>
   );

@@ -1,43 +1,117 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import API from "../services/api";
-function Register(){
-    const navigate = useNavigate();
-    const [form,setform] = useState({
-        name:"",
-        email:"",
-        password:""
-    });
-    const handleRegister = async(e)=>{
-        e.preventDefault();
-        try{
-            await API.post("/auth/register",form);
-            alert("Registered successfully");
-            navigate("/login");
-        }catch (error) {
-  console.error("FULL ERROR:", error);
-  console.error("SERVER ERROR:", error.response?.data);
+import { useNavigate } from "react-router-dom";
 
-  alert(error.response?.data?.message || "Registration failed");
+function Register() {
+
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: ""
+  });
+
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await API.post("/auth/register", form);
+
+      alert("Registered successfully");
+      navigate("/login");
+
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data?.message || "Registration failed");
+    }
+  };
+
+  return (
+    <div style={styles.container}>
+      <form onSubmit={handleSubmit} style={styles.card}>
+        <h2>📝 Register</h2>
+
+        <input
+          type="text"
+          name="name"
+          placeholder="Name"
+          value={form.name}
+          onChange={handleChange}
+          required
+          style={styles.input}
+        />
+
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={handleChange}
+          required
+          style={styles.input}
+        />
+
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={form.password}
+          onChange={handleChange}
+          required
+          style={styles.input}
+        />
+
+        <button type="submit" style={styles.button}>
+          Register
+        </button>
+
+        <p style={{ marginTop: "10px" }}>
+          Already have an account?{" "}
+          <span
+            style={{ color: "#38bdf8", cursor: "pointer" }}
+            onClick={() => navigate("/login")}
+          >
+            Login
+          </span>
+        </p>
+
+      </form>
+    </div>
+  );
 }
-    };
-    return(
-        <form onSubmit = {handleRegister}>
-            <h2>Register</h2>
-            <input 
-                placeholder="name"
-                onChange={(e)=>setform({...form,name:e.target.value})}
-            />
-            <input 
-                placeholder="email"
-                onChange={(e)=>setform({...form,email:e.target.value})}
-            />
-            <input
-                placeholder="password"
-                onChange={(e)=>setform({...form,password:e.target.value})}
-            />
-            <button type="submit">Register</button>
-        </form>
-    );
-}
+
+const styles = {
+  container: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "90vh"
+  },
+  card: {
+    backgroundColor: "#1e293b",
+    padding: "30px",
+    borderRadius: "10px",
+    width: "350px",
+    boxShadow: "0 0 10px rgba(0,0,0,0.3)"
+  },
+  input: {
+    width: "100%",
+    padding: "8px",
+    marginBottom: "12px"
+  },
+  button: {
+    width: "100%",
+    backgroundColor: "#3b82f6",
+    color: "white"
+  }
+};
+
 export default Register;
