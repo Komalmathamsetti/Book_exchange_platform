@@ -17,3 +17,8 @@ button {
   border: none;
   cursor: pointer;
 }
+.btn-google {
+  background: #db4437;
+  margin-top: 10px;
+  color: white;
+}

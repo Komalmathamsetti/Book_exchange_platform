@@ -34,49 +34,51 @@ function Login() {
       alert(error.response?.data?.message || "Login failed");
     }
   };
-
+  
   return (
-    <div style={styles.container}>
-      <form onSubmit={handleSubmit} style={styles.card}>
-        <h2>🔐 Login</h2>
+  <div style={styles.container}>
+    <form onSubmit={handleSubmit} style={styles.card}>
+      <h2>🔐 Login</h2>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={handleChange}
-          required
-          style={styles.input}
-        />
+      <input
+        type="email"
+        name="email"
+        placeholder="Email"
+        value={form.email}
+        onChange={handleChange}
+        required
+        style={styles.input}
+      />
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
-          required
-          style={styles.input}
-        />
+      <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        value={form.password}
+        onChange={handleChange}
+        required
+        style={styles.input}
+      />
 
-        <button type="submit" style={styles.button}>
-          Login
-        </button>
+      {/* 🔵 Login Button */}
+      <button type="submit" style={styles.button}>
+        Login
+      </button>
 
-        <p style={{ marginTop: "10px" }}>
-          Don't have an account?{" "}
-          <span
-            style={{ color: "#38bdf8", cursor: "pointer" }}
-            onClick={() => navigate("/register")}
-          >
-            Register
-          </span>
-        </p>
+      
+      <p style={{ marginTop: "10px" }}>
+        Don't have an account?{" "}
+        <span
+          style={{ color: "#38bdf8", cursor: "pointer" }}
+          onClick={() => navigate("/register")}
+        >
+          Register
+        </span>
+      </p>
 
-      </form>
-    </div>
-  );
+    </form>
+  </div>
+);
 }
 
 const styles = {

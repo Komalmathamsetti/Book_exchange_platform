@@ -1,6 +1,9 @@
 import { useState } from "react";
 import API from "../services/api";
 import { useNavigate } from "react-router-dom";
+import { signInWithPopup } from "firebase/auth";
+import { auth, provider } from "../firebase";
+
 
 function Register() {
 
@@ -33,6 +36,32 @@ function Register() {
       alert(error.response?.data?.message || "Registration failed");
     }
   };
+  const handleGoogleLogin = async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+
+    console.log(result.user);
+
+    alert("Google login successful");
+    navigate("/");
+
+  } catch (error) {
+    console.error(error);
+    alert("Google login failed");
+  }
+};
+/*const handleGoogleLogin = async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    console.log(result.user);
+    alert("Google login successful");
+    navigate("/");
+  } catch (error) {
+    console.error(error);
+    alert(error.message);   // 🔥 IMPORTANT
+  }
+};*/
+
 
   return (
     <div style={styles.container}>
@@ -72,6 +101,19 @@ function Register() {
         <button type="submit" style={styles.button}>
           Register
         </button>
+        {/* 🔥 ADD THIS BLOCK HERE */}
+      <button
+        type="button"
+        onClick={handleGoogleLogin}
+        style={{
+          ...styles.button,
+          backgroundColor: "#db4437",
+          marginTop: "10px"
+        }}
+      >
+        Continue with Google
+      </button>
+
 
         <p style={{ marginTop: "10px" }}>
           Already have an account?{" "}
