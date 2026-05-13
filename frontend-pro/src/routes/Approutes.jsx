@@ -6,6 +6,8 @@ import Register from "../pages/Register";
 import BrowseBooks from "../pages/Browsebooks";
 import OwnerDashboard from "../pages/OwnerDashboard";
 import ConsumerDashboard from "../pages/ConsumerDashboard";
+import ProtectedRoute from "./protectedRoutes";
+import RoleRoute from "./RoleRoute";
 
 function AppRoutes() {
   return (
@@ -21,12 +23,24 @@ function AppRoutes() {
 
       <Route
         path="/owner-dashboard"
-        element={<OwnerDashboard />}
+        element={
+          <ProtectedRoute>
+            <RoleRoute role="OWNER">
+              <OwnerDashboard />
+            </RoleRoute>
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/consumer-dashboard"
-        element={<ConsumerDashboard />}
+        element={
+          <ProtectedRoute>
+            <RoleRoute role="CONSUMER">
+              <ConsumerDashboard />
+            </RoleRoute>
+          </ProtectedRoute>
+        }
       />
 
     </Routes>
